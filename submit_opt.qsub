@@ -1,0 +1,10 @@
+#!/bin/bash
+#PBS -l nodes=1:ppn=8
+#PBS -l walltime=120:00:00
+#PBS -l mem=32GB
+#PBS -N cyclic_urea_opt
+#PBS -t 1-2
+
+cd $PBS_O_WORKDIR
+NMRNAME=$(sed -n "${PBS_ARRAYID}p" OPT_IN_ARRAY.txt)
+g09 ${NMRNAME}
