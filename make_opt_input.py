@@ -5,7 +5,7 @@ import glob
 
 
 import sys
-sys.path.append('/newhome/bd20841/opt/bg_code/mol_translator/')
+sys.path.append('INSERT_PATH_TO_MOL_TRANSLATOR_HERE')
 from mol_translator.aemol import aemol
 from mol_translator.properties.energy.energy_input import make_g09_optin
 from mol_translator.properties.nmr.nmr_input import make_g09_nmrin
@@ -14,11 +14,11 @@ files = glob.glob('INPUT/*')
 
 for file in files:
 
-	p = file.split('/')[-1].split('.')[0]
+	id = file.split('/')[-1].split('.')[0]
 	ft = file.split('.')[-1]
 
-	amol = aemol(p)
-	amol.from_file(file, ftype=ft)
+	amol = aemol(id)
+	amol.from_file_pyb(file, ftype=ft)
 
 	prefs = {}
 	prefs['mol'] = {}
@@ -32,13 +32,14 @@ for file in files:
 	prefs['optimisation']['freq'] = True
 	prefs['optimisation']['functional'] = 'mPW1PW'
 	prefs['optimisation']['basisset'] = '6-311g(d,p)'
-	prefs['optimisation']['solvent'] = 'none'
+	prefs['optimisation']['solvent'] = None
+	prefs['optimisation']['solventmodel'] = None
 	prefs['optimisation']['grid'] = 'ultrafine'
 	prefs['optimisation']['custom_cmd_line'] = False
 	prefs['optimisation']['nodes'] = 1
 	prefs['optimisation']['walltime'] = '120:00:00'
 
-	molname = 'autoenrich_'+str(p)
+	molname = 'autoenrich_'+str(id)
 	filename = 'OPT/'+molname+'.com'
 	make_g09_optin(prefs, molname, amol, filename)
 	print(filename)
