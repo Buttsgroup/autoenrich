@@ -1,4 +1,13 @@
 # autoENRICH
+
+Update (28/01/2022)
+
+  - Function renaming to comply with changes to mol_translator
+  - bp1 branch added
+  - Master branch rebased to bp1 code
+  - Minor changes to naming method
+
+------------------------------------------------------------------------------------------------------------
 autoENRICH
 
 Instructions to setup autoenrich on HPC cluster (BC3/BC4), last updated April 2021
