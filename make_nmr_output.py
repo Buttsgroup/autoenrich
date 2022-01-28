@@ -6,7 +6,7 @@ import glob
 import copy
 
 import sys
-sys.path.append('/newhome/bd20841/opt/bg_code/mol_translator/')
+sys.path.append('INSERT_PATH_TO_MOL_TRANSLATOR_HERE')
 
 from mol_translator.aemol import aemol
 from mol_translator.properties.energy import energy_ops as eops
@@ -21,22 +21,22 @@ from tqdm import tqdm
 
 amols = []
 for file in tqdm(files):
-	p = file.split('_')[-1].split('.')[0]
+	p = file.split('/')[-1].split('.')[0]
 	try:
-		outfile = 'OUTPUT/autoenrich_' + str(p) + '.nmredata.sdf'
+		outfile = f'OUTPUT/{str(p)}.nmredata.sdf'
 		if os.path.isfile(outfile):
 			continue
 
 		amol = aemol(p)
 		#amol.from_file(file, ftype='g09')
-		amol.from_file(file, ftype='log')
-		#opt_file = 'OPT/LG331_' + str(p) + '.log'
-		amol.prop_fromfile(file, 'g09', 'scf')
+		amol.from_file_pyb(file, ftype='log')
+		opt_file = 'OPT/' + str(p) + '.log'
+		amol.prop_from_file(opt_file, 'g09', 'scf')
 
 		assert amol.mol_properties['energy'] < 1000000, print(amol.mol_properties)
 
-		amol.prop_fromfile(file, 'g09', 'nmr')
-		#amol.prop_fromfile(file, 'nmredata', 'nmr')
+		amol.prop_from_file(file, 'g09', 'nmr')
+		#amol.prop_from_file(file, 'nmredata', 'nmr')
 
 		amol.get_bonds()
 		amol.get_path_lengths()
@@ -72,5 +72,5 @@ newmol.get_path_lengths()
 get_coupling_types(newmol)
 newmol.atom_properties['shift'] = boltz_atoms['shift']
 newmol.pair_properties['coupling'] = boltz_pairs['coupling']
-outfile = 'OUTPUT/CYCLIC_UREA_AVERAGED.nmredata.sdf'
+outfile = 'OUTPUT/AE_AVERAGED.nmredata.sdf'
 write_nmredata(outfile, newmol)

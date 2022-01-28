@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --partition=cpu*
+#SBATCH --partition=cpu
 #SBATCH --ntasks-per-node=8
 #SBATCH --time=120:00:00
 #SBATCH --mem=32GB
