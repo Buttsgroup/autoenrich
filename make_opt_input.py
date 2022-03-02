@@ -40,7 +40,7 @@ for file in files:
 	prefs['optimisation']['walltime'] = '120:00:00'
 
 	molname = 'autoenrich_'+str(id)
-	filename = 'OPT/'+molname+'.com'
+	filename = f'OPT/{molname}.com'
 	make_g09_optin(prefs, molname, amol, filename)
 	print(filename)
 	with open('OPT_IN_ARRAY.txt', 'a') as f:

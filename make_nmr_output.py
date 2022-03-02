@@ -31,12 +31,12 @@ for file in tqdm(files):
 		#amol.from_file(file, ftype='g09')
 		amol.from_file_pyb(file, ftype='log')
 		opt_file = f'OPT/{str(id)}.log'
-		amol.prop_from_file(opt_file, 'g09', 'scf')
+		amol.prop_from_file(opt_file, 'scf', 'g09')
 
 		assert amol.mol_properties['energy'] < 1000000, print(amol.mol_properties)
 
-		amol.prop_from_file(file, 'g09', 'nmr')
-		#amol.prop_fromfile(file, 'nmredata', 'nmr')
+		amol.prop_from_file(file, 'nmr', 'g09')
+		#amol.prop_fromfile(file, 'nmr', 'nmredata')
 
 		amol.get_bonds()
 		amol.get_path_lengths()
@@ -48,7 +48,7 @@ for file in tqdm(files):
 		amols.append(amol)
 	except:
 		print('Bad file, ID', id)
-		file = 'NMR/'+file
+		file = f'NMR/{file}'
 		with open('NMR_RESUB_ARRAY.txt', 'a') as f:
 			print(file, file=f)
 
@@ -66,7 +66,7 @@ boltz_atoms, boltz_pairs = eops.boltzmann_average(amols, pair_props=['coupling']
 
 
 
-newmol = copy.deepcopy(amols[0])
+newmol = amols[0]
 newmol.get_bonds()
 newmol.get_path_lengths()
 get_coupling_types(newmol)

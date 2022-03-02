@@ -39,7 +39,7 @@ for file in files:
 		prefs['NMR']['walltime'] = '120:00:00'
 
 		molname = str(p)
-		filename = 'NMR/'+molname+'.com'
+		filename = f'NMR/{molname}.com'
 		if not os.path.exists(filename):
 			make_g09_nmrin(prefs, molname, amol, filename)
 			print(filename)
