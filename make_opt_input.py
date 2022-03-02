@@ -39,7 +39,7 @@ for file in files:
 	prefs['optimisation']['nodes'] = 1
 	prefs['optimisation']['walltime'] = '120:00:00'
 
-	molname = 'autoenrich_'+str(id)
+	molname = str(id)
 	filename = f'OPT/{molname}.com'
 	make_g09_optin(prefs, molname, amol, filename)
 	print(filename)
