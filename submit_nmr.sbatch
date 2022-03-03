@@ -8,7 +8,7 @@
 #SBATCH --job-name=ae_nmr
 #SBATCH --array=1-99
 
-module add apps/gaussian/g16
+module add apps/gaussian/16
 
 cd $SLURM_SUBMIT_DIR
 NMRNAME=$(sed -n "${SLURM_ARRAY_TASK_ID}p" NMR_IN_ARRAY.txt)
