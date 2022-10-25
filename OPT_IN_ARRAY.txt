@@ -1,0 +1,6 @@
+OPT/CHESHIRE_PROBE_E-3,4-dimethyl-2-pentane_conf_0.com
+OPT/CHESHIRE_PROBE_E-3,4-dimethyl-2-pentane_conf_2.com
+OPT/3d_CHESHIRE_PROBE_2,5-dihydrofuran_conf_0.com
+OPT/CHESHIRE_PROBE_allyl_isothiocyanate_conf_1.com
+OPT/CHESHIRE_PROBE_E-3,4-dimethyl-2-pentane_conf_9.com
+OPT/3d_CHESHIRE_PROBE_1,3-dioxane_conf_0.com

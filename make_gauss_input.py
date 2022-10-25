@@ -1,5 +1,4 @@
-
-import pybel as pyb
+from openbabel import pybel as pyb
 
 import glob
 
@@ -7,47 +6,51 @@ import os
 
 import sys
 sys.path.append('INSERT_PATH_TO_MOL_TRANSLATOR_HERE')
-from mol_translator.aemol import aemol
-#from mol_translator.properties.energy.energy_input import make_optin
-from mol_translator.properties.nmr.nmr_input import make_g09_nmrin
+from mol_translator.aemol import Aemol
 
-files = glob.glob('OPT/*.log')
+from mol_translator.comp_chem.gaussian.gaussian_input import write_gaussian_com
+from mol_translator.comp_chem.gaussian.gaussian_input import make_gaussian_rootline
+
+
+files = glob.glob('OPT/*log')
 
 for file in files:
 
 	print(file)
-	id = file.split('/')[-1].split('.')[0]
+	p = file.split('/')[1].split('.')[0]
+	print(p)
 	try:
-		amol = aemol(id)
-		amol.from_file_pyb(file, ftype='g09')
+		amol = Aemol(p)
+		amol.from_file_ob(file, ftype='g09')
 
+		
 		prefs = {}
-		prefs['mol'] = {}
-		prefs['mol']['charge'] = 0
-		prefs['mol']['multiplicity'] = 1
-		prefs['NMR'] = {}
-		prefs['NMR']['software'] = 'g09'
-		prefs['NMR']['memory'] = 26
-		prefs['NMR']['processors'] = 8
-		prefs['NMR']['functional'] = 'wB97XD'
-		prefs['NMR']['basisset'] = '6-311g(d,p)'
-		prefs['NMR']['solvent'] = None
-		prefs['NMR']['solventmodel'] = None
-		prefs['NMR']['mixed'] = True
-		prefs['NMR']['custom_cmd_line'] = False
-		prefs['NMR']['nodes'] = 1
-		prefs['NMR']['walltime'] = '120:00:00'
+		prefs['calc_type'] = 'nmr'
+		prefs['charge'] = 0
+		prefs['multiplicity'] = 1
+		prefs['software'] = 'g09'
+		prefs['memory'] = 26
+		prefs['processors'] = 8
+		prefs['functional'] = 'wB97XD'
+		prefs['basis_set'] = '6-311g(d,p)'
+		prefs['solvent'] = None
+		prefs['solventmodel'] = ''
+		prefs['mixed'] = True
+		prefs['custom_cmd_line'] = False
+		prefs['nodes'] = 1
+		prefs['walltime'] = '120:00:00'
 
 		molname = str(p)
 		filename = f'NMR/{molname}.com'
 		if not os.path.exists(filename):
-			make_g09_nmrin(prefs, molname, amol, filename)
+			
+			root_line=make_gaussian_rootline(prefs)
+			write_gaussian_com(prefs, molname, amol, root_line, filename)
 			print(filename)
 			with open('NMR_IN_ARRAY.txt', 'a') as f:
 				print(filename, file=f)
-
 	except Exception as e:
 		print('Exception: ', e)
-		file = 'OPT/'+str(id)+'.com'
+		file = 'OPT/'+str(p)+'.com'
 		with open('OPT_RESUB_ARRAY.txt', 'a') as f:
 			print(file, file=f)

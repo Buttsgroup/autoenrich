@@ -1,5 +1,5 @@
 
-import pybel as pyb
+from openbabel import pybel as pyb
 import os
 
 import glob
@@ -8,8 +8,8 @@ import copy
 import sys
 sys.path.append('INSERT_PATH_TO_MOL_TRANSLATOR_HERE')
 
-from mol_translator.aemol import aemol
-from mol_translator.properties.energy import energy_ops as eops
+from mol_translator.aemol import Aemol
+#from mol_translator.properties.energy import energy_ops as eops
 from mol_translator.properties.nmr.nmr_write import write_nmredata
 from mol_translator.properties.nmr.nmr_ops import get_coupling_types, scale_chemical_shifts
 
@@ -21,22 +21,24 @@ from tqdm import tqdm
 
 amols = []
 for file in tqdm(files):
-	id = file.split('/')[-1].split('.')[0]
+	p = file.split('/')[-1].split('.')[0]
 	try:
-		outfile = 'OUTPUT/autoenrich_' + str(id) + '.nmredata.sdf'
+		outfile = 'OUTPUT/' + str(p) + '.nmredata.sdf'
 		if os.path.isfile(outfile):
 			continue
-
-		amol = aemol(id)
+		
+		amol = Aemol(p)
 		#amol.from_file(file, ftype='g09')
-		amol.from_file_pyb(file, ftype='log')
-		opt_file = f'OPT/{str(id)}.log'
-		amol.prop_from_file(opt_file, 'scf', 'g09')
+		amol.from_file_ob(file, ftype='log')
+		opt_file = 'OPT/' + str(p) + '.log'
+		amol.prop_from_file(opt_file, 'scf', 'gauss')
 
+		amol.from_ob(amol.obmol)
+		
 		assert amol.mol_properties['energy'] < 1000000, print(amol.mol_properties)
 
-		amol.prop_from_file(file, 'nmr', 'g09')
-		#amol.prop_fromfile(file, 'nmr', 'nmredata')
+		amol.prop_from_file(file,'nmr', 'gauss')
+		#amol.prop_fromfile(file, 'nmredata', 'nmr')
 
 		amol.get_bonds()
 		amol.get_path_lengths()
@@ -45,13 +47,13 @@ for file in tqdm(files):
 
 		write_nmredata(outfile, amol)
 
-		amols.append(amol)
+		#amols.append(amol)
 	except:
-		print('Bad file, ID', id)
-		file = f'NMR/{file}'
+		print('Bad file, ID', p)
+		file = 'NMR/'+file
 		with open('NMR_RESUB_ARRAY.txt', 'a') as f:
 			print(file, file=f)
-
+'''
 eops.calc_pops(amols)
 
 with open('energies.txt', 'w') as f:
@@ -66,11 +68,12 @@ boltz_atoms, boltz_pairs = eops.boltzmann_average(amols, pair_props=['coupling']
 
 
 
-newmol = amols[0]
+newmol = copy.deepcopy(amols[0])
 newmol.get_bonds()
 newmol.get_path_lengths()
 get_coupling_types(newmol)
 newmol.atom_properties['shift'] = boltz_atoms['shift']
 newmol.pair_properties['coupling'] = boltz_pairs['coupling']
-outfile = 'OUTPUT/AE_AVERAGED.nmredata.sdf'
+outfile = 'OUTPUT/CYCLIC_UREA_AVERAGED.nmredata.sdf'
 write_nmredata(outfile, newmol)
+'''
